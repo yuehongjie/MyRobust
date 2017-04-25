@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+//制作补丁时才将这个打开，auto-patch-plugin 紧跟着 com.android.application
+//apply plugin: 'auto-patch-plugin'
+apply plugin: 'robust'
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.yu.myrobust"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    //签名
+    signingConfigs {
+        key {
+            storeFile file("key.jks")
+            storePassword "001002"
+            keyAlias "key_alias"
+            keyPassword "001002"
+        }
+    }
+
+    buildTypes {
+        release {
+            //minifyEnabled false  //如果不开启混淆 那么是不会生成 mapping.txt 的
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.key
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.meituan.robust:robust:0.3.3'
+    testCompile 'junit:junit:4.12'
+}
